@@ -31,6 +31,5 @@ private:
     bool crearSocket();
     bool enlazarKernel(); // escucha clientes y define cuantos va a escuchar
     static void* controladorCliente(void* obj); //lleva el control de los mensajes de los clientes, cada cliente es un hilo
-
 };
 #endif //SERVER_SOCKETSERVER_H
