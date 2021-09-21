@@ -1,4 +1,5 @@
 #include "SocketClient.h"
+#include "game/Game.h"
 
 SocketClient* cliente;
 
@@ -19,14 +20,19 @@ int main() {
 
     string json = "Hola desde el cliente";
 
-    while (true){
-        string msn;
-        cin >> msn;
-        if(msn == "salir")
-            break;
+    Game* session = new Game;
+
+    while (session->isOn()){
+        //string msn;
+        //cin >> msn;
+        session->update();
+        session->render();
+        //if(msn == "salir")
+        //    break;
         cliente->setMensaje(json.c_str());
     }
 
+    delete session;
     delete cliente;
 
     return 0;

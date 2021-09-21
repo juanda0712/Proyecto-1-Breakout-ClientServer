@@ -10,7 +10,7 @@ void SocketClient::conectar() {
         cout << "Error al crear el socket " << endl;
 
     info.sin_family = AF_INET; //IPV4 tipo de conexion
-    info.sin_addr.s_addr = inet_addr("192.168.0.11"); //acepta a cualquiera con mi ip y mi puerto
+    info.sin_addr.s_addr = inet_addr("192.168.0.19"); //acepta a cualquiera con mi ip y mi puerto
     info.sin_port = ntohs(4050); //definimos el puerto
     memset(&info.sin_zero, 0, sizeof(info.sin_zero)); //limpiamos la estructura
     cout << "Se creo el socket " << endl;
