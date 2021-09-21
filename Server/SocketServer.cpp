@@ -34,7 +34,7 @@ void SocketServer::run() {
     while(true){
         dataSocket clientData;
         socklen_t clientLen = sizeof(clientData.info);
-        cout << "Esperando a que conecte un cliente" << endl;
+        cout << "Esperando a que conecte un cliente..." << endl;
         clientData.descriptor = accept(descriptor,(sockaddr *)&clientData.info,&clientLen); //funcion bloqueante
 
         if (clientData.descriptor < 0){
