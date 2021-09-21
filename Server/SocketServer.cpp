@@ -57,6 +57,7 @@ void SocketServer::run() {
 
 void* SocketServer::controladorCliente(void* obj) {
     dataSocket* clientData = (dataSocket * )obj;
+
     while(true){
         string mensaje;
         char buffer[1024] = {0};
