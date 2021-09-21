@@ -24,6 +24,7 @@ void SocketClient::conectar() {
     pthread_detach(hilo);
 
 }
+
 void * SocketClient::controlador(void *obj) {
     SocketClient* c = (SocketClient *)obj;
     bool estado = true;
