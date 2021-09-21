@@ -47,7 +47,6 @@ void SocketServer::run() {
         else{
             clientes.push_back(clientData.descriptor);
             cout << "Cliente conectado" << endl;
-
             pthread_t hilo;
             pthread_create(&hilo,0,SocketServer::controladorCliente,(void *)&clientData);
             pthread_detach(hilo);
