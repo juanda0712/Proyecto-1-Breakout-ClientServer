@@ -11,6 +11,8 @@
 #include "SFML/Audio.hpp"
 #include "SFML/System.hpp"
 #include "Bar.h"
+#include "Ball.h"
+#include <pthread.h>
 
 using namespace sf;
 
@@ -18,7 +20,8 @@ class Game {
 private:
     RenderWindow* window;
     Event event;
-    Bar gameBar;
+    Bar* gameBar;
+    Ball* gameBall;
 public:
     Game();
     bool isOn();

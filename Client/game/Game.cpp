@@ -6,6 +6,8 @@
 
 Game::Game() {
     this->window = new RenderWindow(VideoMode(800, 600), "Crazy Breakout", Style::Titlebar | Style::Close);
+    this->gameBar = new Bar();
+    this->gameBall = new Ball(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y);
 }
 
 bool Game::isOn() {
@@ -20,16 +22,16 @@ void Game::update() {
         }
         else if (this->event.type == Event::KeyPressed) {
             if (Keyboard::isKeyPressed(Keyboard::A)){
-                gameBar.movement(0);
+                gameBar->movement(0);
             }
             if (Keyboard::isKeyPressed(Keyboard::D)){
-                gameBar.movement(1);
+                gameBar->movement(1);
             }
             if (Keyboard::isKeyPressed(Keyboard::Left)){
-                gameBar.rot(0);
+                gameBar->rot(0);
             }
             if (Keyboard::isKeyPressed(Keyboard::Right)){
-                gameBar.rot(1);
+                gameBar->rot(1);
             }
         }
     }
@@ -38,7 +40,8 @@ void Game::update() {
 void Game::render() {
     this->window->clear(Color::Black);
 
-    this->window->draw(*gameBar.getBar());
+    this->window->draw(gameBar->getBar());
+    this->window->draw(gameBall->getBall());
 
     this->window->display();
 }

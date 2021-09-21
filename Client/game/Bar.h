@@ -11,12 +11,12 @@ using namespace sf;
 
 class Bar {
 private:
-    RectangleShape* barra;
+    RectangleShape barra;
     float positionx;
     float angle;
 public:
     Bar();
-    RectangleShape* getBar();
+    RectangleShape getBar();
     void movement(int dir);
     void rot(int dir);
 };

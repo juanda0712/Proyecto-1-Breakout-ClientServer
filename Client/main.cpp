@@ -29,7 +29,7 @@ int main() {
         session->render();
         //if(msn == "salir")
         //    break;
-        cliente->setMensaje(json.c_str());
+        //cliente->setMensaje(json.c_str());
     }
 
     delete session;
