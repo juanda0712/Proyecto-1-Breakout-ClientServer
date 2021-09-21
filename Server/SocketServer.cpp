@@ -84,6 +84,5 @@ void* SocketServer::controladorCliente(void* obj) {
 void SocketServer::setMensaje(const char *msn) {
     for (int i = 0; i < clientes.size(); i++) {
         send(clientes[i], msn, strlen(msn), 0);
-
     }
 }
