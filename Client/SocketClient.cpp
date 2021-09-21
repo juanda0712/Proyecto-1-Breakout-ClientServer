@@ -56,6 +56,7 @@ void * SocketClient::controlador(void *obj) {
     pthread_exit(NULL);
 
 }
+
 void SocketClient::setMensaje(const char *msn) {
     send(descriptor, msn, strlen(msn), 0);
 }
