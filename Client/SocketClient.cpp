@@ -2,6 +2,7 @@
 
 SocketClient::SocketClient() {}
 
+
 void SocketClient::conectar() {
     //Crear un descriptor
     descriptor = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -23,7 +24,6 @@ void SocketClient::conectar() {
     pthread_detach(hilo);
 
 }
-
 void * SocketClient::controlador(void *obj) {
     SocketClient* c = (SocketClient *)obj;
     bool estado = true;
@@ -55,7 +55,6 @@ void * SocketClient::controlador(void *obj) {
     pthread_exit(NULL);
 
 }
-
 void SocketClient::setMensaje(const char *msn) {
     send(descriptor, msn, strlen(msn), 0);
 }
