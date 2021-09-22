@@ -13,6 +13,7 @@
 #include "Bar.h"
 #include "Ball.h"
 #include "Block.h"
+#include "../block_factory/BlockFactory.h"
 #include <random>
 
 using namespace sf;
@@ -24,13 +25,13 @@ private:
     Bar* gameBar;
     Ball* gameBall;
     Text label_points;
-    int maxBalls;
     void initLabel();
     void initBlock();
 public:
     int gamePoints;
     Block* blocks[60];
     Game();
+    ~Game();
     bool isOn();
     void pollEvent();
     void updateKey();

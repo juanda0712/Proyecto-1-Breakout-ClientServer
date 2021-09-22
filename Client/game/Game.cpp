@@ -16,6 +16,10 @@ Game::Game() {
     initLabel();
 }
 
+Game::~Game() {
+    delete *blocks;
+}
+
 void Game::initLabel() {
     this->label_points.setString("POINTS: " + std::to_string(this->gamePoints));
     this->label_points.setPosition(540.f, 230.f);
@@ -35,14 +39,24 @@ void Game::initBlock() {
             varX = 0;
             varY += 50;
         }
-        block = new Block((800.f/15) + varX, 1.f + varY, 3, 30, false, false);
-        block->blockShape.setSize(Vector2f(40.f, 20.f));
-        block->blockShape.setOrigin(20.f, 10.f);
-        block->blockShape.setPosition(block->getX(), block->getY());
-        block->blockShape.setFillColor(Color::Green);
-        block->blockShape.setOutlineColor(Color::White);
-        block->blockShape.setOutlineThickness(2.f);
-
+        if (counter%2==0) {
+            block = BlockFactory::commonBlock(varX, varY);
+        }
+        else if (counter%3==0){
+            block = BlockFactory::doubleBlock(varX, varY);
+        }
+        else if (counter%4==0) {
+            block = BlockFactory::tripleBlock(varX, varY);
+        }
+        else if (counter%5==0) {
+            block = BlockFactory::deepBlock(varX, varY);
+        }
+        else if (counter%6==0) {
+            block = BlockFactory::innerBlock(varX, varY);
+        }
+        else {
+            block = BlockFactory::surpriseBlock(varX, varY);
+        }
         counter++;
     }
 }

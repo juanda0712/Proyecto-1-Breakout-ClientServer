@@ -19,5 +19,5 @@ if (SFML_FOUND)
     message(STATUS "SFML_VERSION: ${SFML_VERSION}")
 endif()
 
-add_executable(Client main.cpp SocketClient.cpp SocketClient.h game/Game.cpp game/Game.h game/Bar.cpp game/Bar.h game/Ball.cpp game/Ball.h game/Block.cpp game/Block.h)
+add_executable(Client main.cpp SocketClient.cpp SocketClient.h game/Game.cpp game/Game.h game/Bar.cpp game/Bar.h game/Ball.cpp game/Ball.h game/Block.cpp game/Block.h block_factory/BlockFactory.cpp block_factory/BlockFactory.h)
 target_link_libraries(Client sfml-graphics sfml-window sfml-system)
