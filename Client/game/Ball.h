@@ -14,14 +14,14 @@ class Ball {
 private:
     CircleShape myBall;
     bool onScreen;
-    bool RIGHT;
-    bool UP;
     float posX;
     float posY;
-public:
-    Ball(float x, float y);
+    float speed;
     void mover_X();
     void mover_Y(Bar* ptrBar);
+public:
+    Ball(float x, float y, float speed);
+    void updateBallMovement(Bar* bar);
     CircleShape getBall();
 };
 

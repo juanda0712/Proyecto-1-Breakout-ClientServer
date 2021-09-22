@@ -12,8 +12,6 @@ using namespace sf;
 class Bar {
 private:
     RectangleShape barra;
-    float positionx;
-    float angle;
 public:
     Bar();
     RectangleShape getBar();

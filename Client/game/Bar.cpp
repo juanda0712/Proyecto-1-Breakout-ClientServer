@@ -8,37 +8,33 @@ Bar::Bar() {
     barra.setSize(Vector2f(100, 10));
     barra.setPosition(400, 550);
     barra.setOrigin(50, 10);
-    barra.setFillColor(Color::Blue);
-    barra.setOutlineColor(Color::Yellow);
+    barra.setFillColor(Color::Yellow);
+    barra.setOutlineColor(Color::White);
     barra.setOutlineThickness(2.f);
-    this->angle = 0;
 }
 
 void Bar::movement(int dir) {
     if (dir == 0) {
-        if (this->barra.getPosition().x <= 0) {
-            positionx = 0;
+        if (this->barra.getPosition().x <= 50) {
+            barra.setPosition(50.f, 550.f);
         }
-        this->positionx -= 10;
-        barra.setPosition(positionx, 550);
+        barra.move(-5.f, 0.f);
     }
     else if (dir == 1) {
-        if (this->barra.getPosition().x >= 800) {
-            positionx = 800;
+        if (this->barra.getPosition().x >= 750) {
+            barra.setPosition(750.f, 550.f);
         }
-        this->positionx += 10;
-        barra.setPosition(positionx, 550);
+        barra.move(5.f, 0.f);
     }
 }
 
 void Bar::rot(int dir) {
     if (dir == 0) {
-        angle -= 5.f;
+        barra.rotate(-3.f);
     }
     else if (dir == 1) {
-        angle += 5.f;
+        barra.rotate(3.f);
     }
-    this->barra.setRotation(angle);
 }
 
 RectangleShape Bar::getBar() {
