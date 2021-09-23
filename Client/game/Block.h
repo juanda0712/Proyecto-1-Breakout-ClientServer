@@ -17,16 +17,21 @@ private:
     int points;
     bool deep;
     bool surprise;
+    bool inner;
+    bool alive;
 public:
     RectangleShape blockShape;
-    Block(float posX, float posY, int lives, int points, bool deep, bool surprise);
+    Block(float posX, float posY, int lives, int points, bool deep, bool surprise, bool inner);
     float getX() const;
     float getY() const;
     int getPoints() const;
     int getLives() const;
     bool getIsDeep() const;
     bool getIsSurprise() const;
+    bool getIsInner() const;
     void getHit();
+    bool getIsAlive() const;
+    void die();
 };
 
 

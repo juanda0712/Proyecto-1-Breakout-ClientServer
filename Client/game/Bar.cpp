@@ -18,13 +18,13 @@ void Bar::movement(int dir) {
         if (this->barra.getPosition().x <= 50) {
             barra.setPosition(50.f, 550.f);
         }
-        barra.move(-5.f, 0.f);
+        barra.move(-7.f, 0.f);
     }
     else if (dir == 1) {
         if (this->barra.getPosition().x >= 750) {
             barra.setPosition(750.f, 550.f);
         }
-        barra.move(5.f, 0.f);
+        barra.move(7.f, 0.f);
     }
 }
 

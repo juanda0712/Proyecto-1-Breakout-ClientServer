@@ -17,11 +17,13 @@ private:
     float speed;
     bool right;
     bool up;
+    int deepPower;
 public:
     Ball(float x, float y, float speed);
     void startMoving();
-    void ballMovement();
+    void ballMovement(float initPosX, float initPosY);
     CircleShape getBall();
+    void setUp(bool newUp);
 };
 
 

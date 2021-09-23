@@ -9,7 +9,7 @@ Game::Game() {
     this->window->setFramerateLimit(60);
 
     this->gameBar = new Bar();
-    this->gameBall = new Ball(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y, 4.f);
+    this->gameBall = new Ball(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y, 5.f);
 
     this->gamePoints = 0;
     this->currentPoints = 0;
@@ -39,24 +39,7 @@ void Game::initBlock() {
             varX = 0;
             varY += 50;
         }
-        if (counter%2==0) {
-            block = BlockFactory::commonBlock(varX, varY);
-        }
-        else if (counter%3==0){
-            block = BlockFactory::doubleBlock(varX, varY);
-        }
-        else if (counter%4==0) {
-            block = BlockFactory::tripleBlock(varX, varY);
-        }
-        else if (counter%5==0) {
-            block = BlockFactory::deepBlock(varX, varY);
-        }
-        else if (counter%6==0) {
-            block = BlockFactory::innerBlock(varX, varY);
-        }
-        else {
-            block = BlockFactory::surpriseBlock(varX, varY);
-        }
+        block = BlockFactory::doubleBlock(varX, varY);
         counter++;
     }
 }
@@ -71,8 +54,14 @@ void Game::updateBlocks() {
         if (this->gameBall->getBall().getGlobalBounds().intersects(b->blockShape.getGlobalBounds())) {
             b->getHit();
             if (b->getLives() == 0) {
+                b->blockShape.setFillColor(Color::Transparent);
+            }
+            if (b->getLives() <= -1) {
+                b->die();
                 updatePoints(b->getPoints());
-                delete b;
+            }
+            if (b->getIsAlive()) {
+                gameBall->setUp(false);
             }
         }
     }
@@ -110,13 +99,19 @@ void Game::updateKey() {
 }
 
 void Game::updateBalls() {
-    gameBall->ballMovement();
+    if (gameBall->getBall().getGlobalBounds().intersects(gameBar->getBar().getGlobalBounds())) {
+        gameBall->setUp(true);
+    }
+    if (gameBall->getBall().getPosition().y >= 600 - gameBall->getBall().getRadius()) {
+        this->window->close();
+    }
+    gameBall->ballMovement(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y);
 }
 
 void Game::update() {;
     pollEvent();
     updateKey();
-    //updateBlocks();
+    updateBlocks();
     updateBalls();
 }
 
