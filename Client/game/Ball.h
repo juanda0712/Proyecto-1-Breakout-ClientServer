@@ -6,6 +6,7 @@
 #define CLIENT_BALL_H
 
 #include "SFML/Graphics.hpp"
+#include "math.h"
 #include "Bar.h"
 
 using namespace sf;
@@ -24,6 +25,7 @@ public:
     void ballMovement(float initPosX, float initPosY);
     CircleShape getBall();
     void setUp(bool newUp);
+    void restartBall(float initPosX, float initPosY);
 };
 
 

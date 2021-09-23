@@ -13,6 +13,7 @@ Game::Game() {
 
     this->gamePoints = 0;
     this->currentPoints = 0;
+    this->currentLives = 3;
     initBlock();
     initLabel();
 }
@@ -30,22 +31,43 @@ void Game::initLabel() {
 }
 
 void Game::initBlock() {
+    int rand_block;
     int counter = 0;
     float varX = 0;
     float varY = 0;
     for (auto & block : blocks) {
+        block = nullptr;
+        rand_block = 1 + (rand() % 6);
         varX += 50;
         if (counter % 15 == 0) {
             varX = 0;
             varY += 50;
         }
-        block = BlockFactory::doubleBlock(varX, varY);
+        if (rand_block == 1) {
+            block = BlockFactory::commonBlock(varX, varY);
+        }
+        else if (rand_block == 2) {
+            block = BlockFactory::doubleBlock(varX, varY);
+        }
+        else if (rand_block == 3){
+            block = BlockFactory::tripleBlock(varX, varY);
+        }
+        else if (rand_block == 4){
+            block = BlockFactory::innerBlock(varX, varY);
+        }
+        else if (rand_block == 5){
+            block = BlockFactory::deepBlock(varX, varY);
+        }
+        else {
+            block = BlockFactory::surpriseBlock(varX, varY);
+        }
         counter++;
     }
 }
 
 void Game::updatePoints(int points) {
     this->currentPoints += points;
+    std::cout << "POINTS: " + std::to_string(currentPoints) << std::endl;
     this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
 }
 
@@ -53,15 +75,21 @@ void Game::updateBlocks() {
     for (Block* b : blocks) {
         if (this->gameBall->getBall().getGlobalBounds().intersects(b->blockShape.getGlobalBounds())) {
             b->getHit();
+
             if (b->getLives() == 0) {
                 b->blockShape.setFillColor(Color::Transparent);
+                updatePoints(b->getPoints());
             }
             if (b->getLives() <= -1) {
                 b->die();
-                updatePoints(b->getPoints());
             }
             if (b->getIsAlive()) {
-                gameBall->setUp(false);
+                if (gameBall->getBall().getGlobalBounds().top == b->blockShape.getGlobalBounds().top) {
+                    gameBall->setUp(false);
+                }
+                else {
+                    gameBall->setUp(true);
+                }
             }
         }
     }
@@ -103,12 +131,20 @@ void Game::updateBalls() {
         gameBall->setUp(true);
     }
     if (gameBall->getBall().getPosition().y >= 600 - gameBall->getBall().getRadius()) {
-        this->window->close();
+        loseBall();
+        gameBall->restartBall(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y);
     }
     gameBall->ballMovement(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y);
 }
 
-void Game::update() {;
+void Game::loseBall() {
+    this->currentLives--;
+}
+
+void Game::update() {
+    if (currentLives <= 0) {
+        this->window->close();
+    }
     pollEvent();
     updateKey();
     updateBlocks();

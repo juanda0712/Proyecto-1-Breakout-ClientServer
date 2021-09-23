@@ -30,10 +30,10 @@ void Bar::movement(int dir) {
 
 void Bar::rot(int dir) {
     if (dir == 0) {
-        barra.rotate(-3.f);
+        barra.rotate(3.f);
     }
     else if (dir == 1) {
-        barra.rotate(3.f);
+        barra.rotate(-3.f);
     }
 }
 

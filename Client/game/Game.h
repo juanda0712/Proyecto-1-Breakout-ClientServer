@@ -14,6 +14,7 @@
 #include "Ball.h"
 #include "Block.h"
 #include "../block_factory/BlockFactory.h"
+#include <iostream>
 #include <random>
 
 using namespace sf;
@@ -25,6 +26,7 @@ private:
     Bar* gameBar;
     Ball* gameBall;
     int currentPoints;
+    int currentLives;
     Text pointsT;
     void initLabel();
     void initBlock();
@@ -41,6 +43,7 @@ public:
     void updateBlocks();
     void updatePoints(int points);
     void render();
+    void loseBall();
 };
 
 

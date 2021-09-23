@@ -32,6 +32,11 @@ void Ball::setUp(bool newUp) {
     this->up = newUp;
 }
 
+void Ball::restartBall(float initPosX, float initPosY) {
+    myBall.setPosition(initPosX, initPosY);
+    this->move = false;
+}
+
 void Ball::ballMovement(float initPosX, float initPosY) {
     if (this->move) {
         if (myBall.getPosition().x < 800 - myBall.getRadius() && right) {
