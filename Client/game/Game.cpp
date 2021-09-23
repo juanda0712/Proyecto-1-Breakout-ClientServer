@@ -9,9 +9,10 @@ Game::Game() {
     this->window->setFramerateLimit(60);
 
     this->gameBar = new Bar();
-    this->gameBall = new Ball(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y, 10.f);
+    this->gameBall = new Ball(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y, 4.f);
 
     this->gamePoints = 0;
+    this->currentPoints = 0;
     initBlock();
     initLabel();
 }
@@ -21,12 +22,11 @@ Game::~Game() {
 }
 
 void Game::initLabel() {
-    this->label_points.setString("POINTS: " + std::to_string(this->gamePoints));
-    this->label_points.setPosition(540.f, 230.f);
-    this->label_points.setFillColor(Color::Cyan);
-    this->label_points.setOutlineColor(Color::Yellow);
-    this->label_points.setOutlineThickness(2.f);
-    this->label_points.setCharacterSize(10);
+    this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
+    this->pointsT.setPosition(800.f/15, 600.f - 50);
+    this->pointsT.setFillColor(Color::Cyan);
+    this->pointsT.setOutlineColor(Color::Yellow);
+    this->pointsT.setOutlineThickness(2.f);
 }
 
 void Game::initBlock() {
@@ -61,6 +61,23 @@ void Game::initBlock() {
     }
 }
 
+void Game::updatePoints(int points) {
+    this->currentPoints += points;
+    this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
+}
+
+void Game::updateBlocks() {
+    for (Block* b : blocks) {
+        if (this->gameBall->getBall().getGlobalBounds().intersects(b->blockShape.getGlobalBounds())) {
+            b->getHit();
+            if (b->getLives() == 0) {
+                updatePoints(b->getPoints());
+                delete b;
+            }
+        }
+    }
+}
+
 bool Game::isOn() {
     return this->window->isOpen();
 }
@@ -87,20 +104,26 @@ void Game::updateKey() {
     if (Keyboard::isKeyPressed(Keyboard::Right)){
         gameBar->rot(1);
     }
+    if (Keyboard::isKeyPressed(Keyboard::Space)) {
+        gameBall->startMoving();
+    }
 }
 
 void Game::updateBalls() {
-    gameBall->updateBallMovement(gameBar);
+    gameBall->ballMovement();
 }
 
 void Game::update() {;
     pollEvent();
     updateKey();
+    //updateBlocks();
+    updateBalls();
 }
 
 void Game::render() {
     this->window->clear(Color::Black);
 
+    this->window->draw(pointsT);
     for (Block* b : blocks) {
         this->window->draw(b->blockShape);
     }

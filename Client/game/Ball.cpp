@@ -11,55 +11,51 @@ Ball::Ball(float x, float y, float speed) {
     myBall.setFillColor(Color::White);
     myBall.setOutlineThickness(2.f);
     myBall.setOutlineColor(Color::Black);
-    this->onScreen = true;
+
     this->speed = speed;
-}
+    this->move = false;
 
-void Ball::mover_X() {
-    bool Right = true;
-    while (onScreen) {
-        while (this->posX < 795 && Right) {
-            myBall.move(speed, 0.f);
-            if (posX >= 795) {
-                Right = false;
-            }
-        }
-        while (this->posX > 0 && !Right) {
-            myBall.move(-speed, 0.f);
-            if (posX <= 0) {
-                Right = true;
-            }
-        }
-    }
-}
-
-void Ball::mover_Y(Bar* ptrBar) {
-    bool Up = true;
-    while (onScreen) {
-        while (this->posY > 5 && Up) {
-            myBall.move(0.f, -speed);
-            if (this->posY <= 5) {
-                Up = false;
-            }
-        }
-        while (this->posY < 595 && !Up) {
-            myBall.move(0.f, speed);
-            if (myBall.getLocalBounds().intersects(ptrBar->getBar().getLocalBounds())) {
-                Up = true;
-            }
-            else if (this->posY >= 600) {
-                onScreen = false;
-                break;
-            }
-        }
-    }
+    this->up = true;
+    this->right - true;
 }
 
 CircleShape Ball::getBall() {
     return this->myBall;
 }
 
-void Ball::updateBallMovement(Bar* bar) {
-    mover_X();
-    mover_Y(bar);
+void Ball::startMoving() {
+    this->move = true;
+}
+
+void Ball::ballMovement() {
+    if (this->move) {
+        if (myBall.getPosition().x < 800 - myBall.getRadius() && right) {
+            myBall.move(speed, 0.f);
+            if (myBall.getPosition().x >= 800 - myBall.getRadius()) {
+                myBall.setPosition(800.f - myBall.getRadius(), myBall.getPosition().y);
+                this->right = false;
+            }
+        }
+        else if (myBall.getPosition().x > 0 + myBall.getRadius() && !right) {
+            myBall.move(-speed, 0.f);
+            if (myBall.getPosition().x <= 0 + myBall.getRadius()) {
+                myBall.setPosition(0.f + myBall.getRadius(), myBall.getPosition().y);
+                this->right = true;
+            }
+        }
+        if (myBall.getPosition().y > 0 + myBall.getRadius() && up) {
+            myBall.move(0.f, -speed);
+            if (myBall.getPosition().y <= 0 + myBall.getRadius()) {
+                myBall.setPosition(myBall.getPosition().x, 0.f + myBall.getRadius());
+                this->up = false;
+            }
+        }
+        else if (myBall.getPosition().y < 600 - myBall.getRadius() && !up) {
+            myBall.move(0.f, speed);
+            if (myBall.getPosition().y >= 600 - myBall.getRadius()) {
+                myBall.setPosition(myBall.getPosition().x, 600.f - myBall.getRadius());
+                this->up = true;
+            }
+        }
+    }
 }

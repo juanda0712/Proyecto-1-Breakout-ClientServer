@@ -13,15 +13,14 @@ using namespace sf;
 class Ball {
 private:
     CircleShape myBall;
-    bool onScreen;
-    float posX;
-    float posY;
+    bool move;
     float speed;
-    void mover_X();
-    void mover_Y(Bar* ptrBar);
+    bool right;
+    bool up;
 public:
     Ball(float x, float y, float speed);
-    void updateBallMovement(Bar* bar);
+    void startMoving();
+    void ballMovement();
     CircleShape getBall();
 };
 

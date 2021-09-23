@@ -13,14 +13,30 @@ Block::Block(float posX, float posY, int lives, int points, bool deep, bool surp
     this->surprise = surprise;
 }
 
-float Block::getX() {
+float Block::getX() const {
     return this->posX;
 }
 
-float Block::getY() {
+float Block::getY() const {
     return this->posY;
 }
 
-int Block::getPoints() {
+int Block::getPoints() const {
     return this->points;
+}
+
+int Block::getLives() const {
+    return this->lives;
+}
+
+bool Block::getIsDeep() const {
+    return this->deep;
+}
+
+bool Block::getIsSurprise() const {
+    return this->surprise;
+}
+
+void Block::getHit() {
+    this->lives--;
 }

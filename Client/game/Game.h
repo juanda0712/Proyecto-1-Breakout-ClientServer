@@ -24,7 +24,8 @@ private:
     Event event;
     Bar* gameBar;
     Ball* gameBall;
-    Text label_points;
+    int currentPoints;
+    Text pointsT;
     void initLabel();
     void initBlock();
 public:
@@ -38,6 +39,7 @@ public:
     void update();
     void updateBalls();
     void updateBlocks();
+    void updatePoints(int points);
     void render();
 };
 

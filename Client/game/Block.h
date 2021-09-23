@@ -20,9 +20,13 @@ private:
 public:
     RectangleShape blockShape;
     Block(float posX, float posY, int lives, int points, bool deep, bool surprise);
-    float getX();
-    float getY();
-    int getPoints();
+    float getX() const;
+    float getY() const;
+    int getPoints() const;
+    int getLives() const;
+    bool getIsDeep() const;
+    bool getIsSurprise() const;
+    void getHit();
 };
 
 
