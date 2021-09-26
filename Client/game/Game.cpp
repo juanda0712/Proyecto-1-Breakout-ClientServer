@@ -11,23 +11,43 @@ Game::Game() {
     this->gameBar = new Bar();
     this->gameBall = new Ball(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y, 5.f);
 
-    this->gamePoints = 0;
     this->currentPoints = 0;
     this->currentLives = 3;
+
+    this->started = false;
+    this->gameOver = false;
+
     initBlock();
-    initLabel();
+    initTexts();
 }
 
 Game::~Game() {
+    delete this->window;
+    delete gameBar;
+    delete gameBall;
     delete *blocks;
 }
 
-void Game::initLabel() {
+void Game::initTexts() {
+    this->f.loadFromFile("../resources/Catalish Huntera.ttf");
+
+    this->pointsT.setFont(this->f);
+    this->pointsT.setCharacterSize(1);
     this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
     this->pointsT.setPosition(800.f/15, 600.f - 50);
-    this->pointsT.setFillColor(Color::Cyan);
-    this->pointsT.setOutlineColor(Color::Yellow);
-    this->pointsT.setOutlineThickness(2.f);
+    this->pointsT.setScale(50,50);
+    this->pointsT.setFillColor(Color::White);
+    this->pointsT.setOutlineColor(Color::Green);
+    this->pointsT.setOutlineThickness(1.f);
+
+    this->messages.setFont(f);
+    this->messages.setCharacterSize(1);
+    this->messages.setPosition(800.f/2, 600.f/2);
+    this->messages.setScale(200, 100);
+    this->messages.setOrigin(100, 50);
+    this->messages.setFillColor(Color::Yellow);
+    this->messages.setOutlineColor(Color::Magenta);
+    this->messages.setOutlineThickness(1.f);
 }
 
 void Game::initBlock() {
@@ -84,7 +104,7 @@ void Game::updateBlocks() {
                 b->die();
             }
             if (b->getIsAlive()) {
-                if (gameBall->getBall().getGlobalBounds().top == b->blockShape.getGlobalBounds().top) {
+                if (gameBall->getUp()) {
                     gameBall->setUp(false);
                 }
                 else {
@@ -109,20 +129,28 @@ void Game::pollEvent() {
 }
 
 void Game::updateKey() {
-    if (Keyboard::isKeyPressed(Keyboard::A)){
-        gameBar->movement(0);
+    if (!this->gameOver) {
+        if (Keyboard::isKeyPressed(Keyboard::A)){
+            gameBar->movement(0);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::D)){
+            gameBar->movement(1);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Left)){
+            gameBar->rot(0);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Right)){
+            gameBar->rot(1);
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Space)) {
+            this->started = true;
+            gameBall->startMoving();
+        }
     }
-    if (Keyboard::isKeyPressed(Keyboard::D)){
-        gameBar->movement(1);
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Left)){
-        gameBar->rot(0);
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Right)){
-        gameBar->rot(1);
-    }
-    if (Keyboard::isKeyPressed(Keyboard::Space)) {
-        gameBall->startMoving();
+    if (Keyboard::isKeyPressed(Keyboard::Escape)) {
+        if (this->gameOver) {
+            this->window->close();
+        }
     }
 }
 
@@ -143,7 +171,7 @@ void Game::loseBall() {
 
 void Game::update() {
     if (currentLives <= 0) {
-        this->window->close();
+        this->gameOver = true;
     }
     pollEvent();
     updateKey();
@@ -153,6 +181,15 @@ void Game::update() {
 
 void Game::render() {
     this->window->clear(Color::Black);
+
+    if (!this->started) {
+        this->messages.setString("Press 'Space' to start!");
+        this->window->draw(messages);
+    }
+    if (this->gameOver) {
+        this->messages.setString("Game Over!\nTotal points: "+ std::to_string(this->currentPoints) +"\nPress ESC to close.");
+        this->window->draw(messages);
+    }
 
     this->window->draw(pointsT);
     for (Block* b : blocks) {

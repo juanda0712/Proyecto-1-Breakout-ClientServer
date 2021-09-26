@@ -32,6 +32,10 @@ void Ball::setUp(bool newUp) {
     this->up = newUp;
 }
 
+bool Ball::getUp() {
+    return this->up;
+}
+
 void Ball::restartBall(float initPosX, float initPosY) {
     myBall.setPosition(initPosX, initPosY);
     this->move = false;

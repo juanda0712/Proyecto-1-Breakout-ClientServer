@@ -23,16 +23,23 @@ class Game {
 private:
     RenderWindow* window;
     Event event;
+
     Bar* gameBar;
     Ball* gameBall;
+    Block* blocks[60];
+
+    bool started;
+    bool gameOver;
+
     int currentPoints;
     int currentLives;
+
+    Font f;
+    Text messages;
     Text pointsT;
-    void initLabel();
+    void initTexts();
     void initBlock();
 public:
-    int gamePoints;
-    Block* blocks[60];
     Game();
     ~Game();
     bool isOn();

@@ -25,6 +25,7 @@ public:
     void ballMovement(float initPosX, float initPosY);
     CircleShape getBall();
     void setUp(bool newUp);
+    bool getUp();
     void restartBall(float initPosX, float initPosY);
 };
 
