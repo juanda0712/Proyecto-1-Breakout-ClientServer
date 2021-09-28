@@ -31,13 +31,13 @@ int main() {
     Game* session = new Game;
 
     while (session->isOn()){
-        string msn;
-        cin >> msn;
+        //string msn;
+        //cin >> msn;
         session->update();
         session->render();
-        if(msn == "salir")
-            break;
-        cliente->setMensaje(json.c_str());
+        //if(msn == "salir")
+        //    break;
+        //cliente->setMensaje(json.c_str());
     }
 
     delete session;

@@ -21,7 +21,7 @@ int main() {
     while (true){
 
 
-        server->setMensaje(json.c_str());
+        //server->setMensaje(json.c_str());
     }
     delete server;
     return 0;

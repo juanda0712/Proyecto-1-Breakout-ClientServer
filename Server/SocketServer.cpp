@@ -130,7 +130,7 @@ void* SocketServer::controladorCliente(void* obj) {
 /**
  * Método setMensaje():
  *
- * Envia mensajes del servidor al cliente
+ * Envia mensajes del servidor a todos los clientes
  *
  * @author Juan Rodriiguez
  */

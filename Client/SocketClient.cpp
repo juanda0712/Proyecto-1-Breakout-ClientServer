@@ -88,7 +88,6 @@ void * SocketClient::controlador(void *obj) {
  *
  * @author Juan Rodriiguez
  */
-void S
 void SocketClient::setMensaje(const char *msn) {
     send(descriptor, msn, strlen(msn), 0);
 }
