@@ -9,27 +9,43 @@
 #include <pthread.h>
 #include <vector>
 #include <unistd.h>
+
 using namespace std;
 
-//estructura para repreesntar a los clientes
+/**
+ * structura  dataSocket:
+ *
+ * ES una estructura creada para guardar el descriptor y la informacion del socket cliente.
+ * Representa a los clientes
+ * @author Juan Rodriguez
+ */
 struct dataSocket{
     int descriptor;
     sockaddr_in info;
 };
 
+/**
+ * Clase SocketServer:
+ *
+ * Es la clase para el socket del server. Contiene los componentes necesarios identificar y alamcenar sistemas..
+ * Establece métodos para Iniciar el servidor, enviar mensajes al cliente, crear el socket , conectar el socket,
+ * con el kernel y monitorear lo que el cliente envie.
+ *
+ * @author Juan Rodriguez
+ */
 class SocketServer{
 public:
     SocketServer();
-    void run(); //inicia lo que tiene que ver con el server (aceptar clientes, crear el socket, recibir mensajes, etc)
+    void run();
     void setMensaje(const char* msn);
 
 private:
-    int descriptor; //identifica a los sistemas
-    sockaddr_in info; //informacion del socket servidor
-    vector<int> clientes; //almacena los clientes que se conecten
+    int descriptor;
+    sockaddr_in info;
+    vector<int> clientes;
 
     bool crearSocket();
-    bool enlazarKernel(); // escucha clientes y define cuantos va a escuchar
-    static void* controladorCliente(void* obj); //lleva el control de los mensajes de los clientes, cada cliente es un hilo
+    bool enlazarKernel();
+    static void* controladorCliente(void* obj);
 };
 #endif //SERVER_SOCKETSERVER_H

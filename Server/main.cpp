@@ -16,16 +16,12 @@ int main() {
     pthread_create(&hiloS, 0, serverRun, NULL);
     pthread_detach(hiloS);
 
-    //ciclo para enviar mensajes al cliente
+    //ciclo para enviar mensajes a los clientes
     string json = "Hola desde el servidor";
     while (true){
-        string msn;
-        cin >> msn;
-        if(msn == "salir"){
-            break;
-        }
-        server->setMensaje(json.c_str());
 
+
+        server->setMensaje(json.c_str());
     }
     delete server;
     return 0;
