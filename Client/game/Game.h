@@ -24,13 +24,14 @@ private:
     RenderWindow* window;
     Event event;
 
-    Bar* gameBar;
-    Ball* gameBall;
+    Bar gameBar;
+    Ball* ball;
     Block* blocks[60];
 
-    bool started;
     bool gameOver;
+    float ballSpeed;
 
+    int currentBalls;
     int currentPoints;
     int currentLives;
 
@@ -42,6 +43,8 @@ private:
 public:
     Game();
     ~Game();
+    void loseBall();
+    void surprise();
     bool isOn();
     void pollEvent();
     void updateKey();
@@ -50,7 +53,6 @@ public:
     void updateBlocks();
     void updatePoints(int points);
     void render();
-    void loseBall();
 };
 
 

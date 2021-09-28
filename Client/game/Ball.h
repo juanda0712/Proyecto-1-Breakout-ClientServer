@@ -18,15 +18,17 @@ private:
     float speed;
     bool right;
     bool up;
-    int deepPower;
 public:
     Ball(float x, float y, float speed);
+    int deepPower;
     void startMoving();
     void ballMovement(float initPosX, float initPosY);
     CircleShape getBall();
+    void getDeepPoint();
     void setUp(bool newUp);
     bool getUp();
     void restartBall(float initPosX, float initPosY);
+    void changeDirection();
 };
 
 

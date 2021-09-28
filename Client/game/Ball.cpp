@@ -13,7 +13,7 @@ Ball::Ball(float x, float y, float speed) {
     myBall.setOutlineColor(Color::Black);
 
     this->speed = speed;
-    this->move = false;
+    Ball::move = false;
     this->deepPower = 0;
 
     this->up = true;
@@ -22,6 +22,15 @@ Ball::Ball(float x, float y, float speed) {
 
 CircleShape Ball::getBall() {
     return this->myBall;
+}
+
+void Ball::changeDirection() {
+    if (this->up) {
+        this->up = false;
+    }
+    else {
+        this->up = true;
+    }
 }
 
 void Ball::startMoving() {
@@ -34,6 +43,10 @@ void Ball::setUp(bool newUp) {
 
 bool Ball::getUp() {
     return this->up;
+}
+
+void Ball::getDeepPoint() {
+    this->deepPower++;
 }
 
 void Ball::restartBall(float initPosX, float initPosY) {

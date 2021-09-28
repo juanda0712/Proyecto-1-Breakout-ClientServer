@@ -38,7 +38,7 @@ Block* BlockFactory::innerBlock(float varX, float varY) {
 }
 
 Block* BlockFactory::deepBlock(float varX, float varY) {
-    auto* block = new Block((800.f/15) + varX, 1.f + varY, 0, 0, true, false, false);
+    auto* block = new Block((800.f/15) + varX, 1.f + varY, 1, 0, true, false, false);
     customizeBlock(block, Color::Black, Color::Yellow);
     return block;
 }

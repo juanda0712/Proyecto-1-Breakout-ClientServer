@@ -8,13 +8,12 @@ Game::Game() {
     this->window = new RenderWindow(VideoMode(800, 600), "Crazy Breakout", Style::Titlebar | Style::Close);
     this->window->setFramerateLimit(60);
 
-    this->gameBar = new Bar();
-    this->gameBall = new Ball(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y, 5.f);
+    this->ball = new Ball(gameBar.getBar().getPosition().x, gameBar.getBar().getPosition().y, 7.f);
 
+    this->currentBalls = 1;
     this->currentPoints = 0;
     this->currentLives = 3;
 
-    this->started = false;
     this->gameOver = false;
 
     initBlock();
@@ -23,9 +22,6 @@ Game::Game() {
 
 Game::~Game() {
     delete this->window;
-    delete gameBar;
-    delete gameBall;
-    delete *blocks;
 }
 
 void Game::initTexts() {
@@ -56,7 +52,6 @@ void Game::initBlock() {
     float varX = 0;
     float varY = 0;
     for (auto & block : blocks) {
-        block = nullptr;
         rand_block = 1 + (rand() % 6);
         varX += 50;
         if (counter % 15 == 0) {
@@ -85,34 +80,18 @@ void Game::initBlock() {
     }
 }
 
-void Game::updatePoints(int points) {
-    this->currentPoints += points;
-    std::cout << "POINTS: " + std::to_string(currentPoints) << std::endl;
-    this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
+void Game::surprise() {
+    int random = 1 + (rand() % 6);
+    if (random == 1) {
+        gameBar.getBar().setSize(Vector2f(200, 10));
+    }
+    else if (random == 2) {
+        gameBar.getBar().setSize(Vector2f(50, 10));
+    }
 }
 
-void Game::updateBlocks() {
-    for (Block* b : blocks) {
-        if (this->gameBall->getBall().getGlobalBounds().intersects(b->blockShape.getGlobalBounds())) {
-            b->getHit();
-
-            if (b->getLives() == 0) {
-                b->blockShape.setFillColor(Color::Transparent);
-                updatePoints(b->getPoints());
-            }
-            if (b->getLives() <= -1) {
-                b->die();
-            }
-            if (b->getIsAlive()) {
-                if (gameBall->getUp()) {
-                    gameBall->setUp(false);
-                }
-                else {
-                    gameBall->setUp(true);
-                }
-            }
-        }
-    }
+void Game::loseBall() {
+    this->currentLives--;
 }
 
 bool Game::isOn() {
@@ -131,20 +110,19 @@ void Game::pollEvent() {
 void Game::updateKey() {
     if (!this->gameOver) {
         if (Keyboard::isKeyPressed(Keyboard::A)){
-            gameBar->movement(0);
+            gameBar.movement(0);
         }
         if (Keyboard::isKeyPressed(Keyboard::D)){
-            gameBar->movement(1);
+            gameBar.movement(1);
         }
         if (Keyboard::isKeyPressed(Keyboard::Left)){
-            gameBar->rot(0);
+            gameBar.rot(0);
         }
         if (Keyboard::isKeyPressed(Keyboard::Right)){
-            gameBar->rot(1);
+            gameBar.rot(1);
         }
         if (Keyboard::isKeyPressed(Keyboard::Space)) {
-            this->started = true;
-            gameBall->startMoving();
+            ball->startMoving();
         }
     }
     if (Keyboard::isKeyPressed(Keyboard::Escape)) {
@@ -155,18 +133,43 @@ void Game::updateKey() {
 }
 
 void Game::updateBalls() {
-    if (gameBall->getBall().getGlobalBounds().intersects(gameBar->getBar().getGlobalBounds())) {
-        gameBall->setUp(true);
+    if (ball->getBall().getGlobalBounds().intersects(gameBar.getBar().getGlobalBounds())) {
+        ball->setUp(true);
     }
-    if (gameBall->getBall().getPosition().y >= 600 - gameBall->getBall().getRadius()) {
+    if (ball->getBall().getPosition().y >= 600 - ball->getBall().getRadius()) {
         loseBall();
-        gameBall->restartBall(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y);
+        ball->restartBall(gameBar.getBar().getPosition().x, gameBar.getBar().getPosition().y);
     }
-    gameBall->ballMovement(gameBar->getBar().getPosition().x, gameBar->getBar().getPosition().y);
+    ball->ballMovement(gameBar.getBar().getPosition().x, gameBar.getBar().getPosition().y);
+    std::cout << ball->deepPower << std::endl;
 }
 
-void Game::loseBall() {
-    this->currentLives--;
+void Game::updateBlocks() {
+    for (Block* b : blocks) {
+        if (this->ball->getBall().getGlobalBounds().intersects(b->blockShape.getGlobalBounds())) {
+            if (b->getIsSurprise()) {
+
+            }
+            else if (b->getIsAlive()) {
+                b->getHit();
+                if (b->getIsDeep()) {
+                    ball->getDeepPoint();
+                }
+                if (b->getLives() < 0) {
+                    b->die();
+                    b->blockShape.setFillColor(Color::Transparent);
+                    b->blockShape.setOutlineColor(Color::Transparent);
+                }
+                ball->changeDirection();
+            }
+        }
+    }
+}
+
+void Game::updatePoints(int points) {
+    this->currentPoints += points;
+    std::cout << "POINTS: " + std::to_string(currentPoints) << std::endl;
+    this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
 }
 
 void Game::update() {
@@ -182,21 +185,11 @@ void Game::update() {
 void Game::render() {
     this->window->clear(Color::Black);
 
-    if (!this->started) {
-        this->messages.setString("Press 'Space' to start!");
-        this->window->draw(messages);
-    }
-    if (this->gameOver) {
-        this->messages.setString("Game Over!\nTotal points: "+ std::to_string(this->currentPoints) +"\nPress ESC to close.");
-        this->window->draw(messages);
-    }
-
-    this->window->draw(pointsT);
-    for (Block* b : blocks) {
+    for (Block* b : this->blocks) {
         this->window->draw(b->blockShape);
     }
-    this->window->draw(gameBar->getBar());
-    this->window->draw(gameBall->getBall());
+    this->window->draw(ball->getBall());
+    this->window->draw(gameBar.getBar());
 
     this->window->display();
 }
