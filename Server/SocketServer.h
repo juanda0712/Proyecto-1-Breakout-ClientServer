@@ -27,7 +27,7 @@ struct dataSocket{
 /**
  * Clase SocketServer:
  *
- * Es la clase para el socket del server. Contiene los componentes necesarios identificar y alamcenar sistemas..
+ * Es la clase para el socket del server. Contiene los componentes necesarios para identificar y alamcenar sistemas..
  * Establece métodos para Iniciar el servidor, enviar mensajes al cliente, crear el socket , conectar el socket,
  * con el kernel y monitorear lo que el cliente envie.
  *

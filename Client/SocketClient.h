@@ -13,7 +13,15 @@
 
 using namespace std;
 
-
+/**
+ * Clase SocketClient:
+ *
+ * Es la clase para el socket del cliente. Contiene los componentes necesarios para identificar al servidor.
+ * Establece métodos para conectarse al servidor, enviar mensajes al servidor, crear el socket y controlar
+ * lo que el servidor le envie.
+ *
+ * @author Juan Rodriguez
+ */
 class SocketClient{
 public:
     SocketClient();
