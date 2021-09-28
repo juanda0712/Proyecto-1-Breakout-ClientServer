@@ -19,22 +19,27 @@
 
 using namespace sf;
 
+/**
+ * Clase Game:
+ *
+ * Es la clase de juego principal. Contiene los componentes necesarios para ejecutar el juego.
+ * Establece métodos para mostrar objetos en pantalla, actualizar puntajes, actualizar el estado tanto de los bloques,
+ * como de la barra y la bola.
+ *
+ * @author Eduardo Bolívar
+ */
 class Game {
 private:
     RenderWindow* window;
     Event event;
-
     Bar gameBar;
     Ball* ball;
     Block* blocks[60];
-
     bool gameOver;
     float ballSpeed;
-
     int currentBalls;
     int currentPoints;
     int currentLives;
-
     Font f;
     Text messages;
     Text pointsT;
@@ -48,10 +53,10 @@ public:
     bool isOn();
     void pollEvent();
     void updateKey();
-    void update();
     void updateBalls();
     void updateBlocks();
     void updatePoints(int points);
+    void update();
     void render();
 };
 

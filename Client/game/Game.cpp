@@ -4,6 +4,15 @@
 
 #include "Game.h"
 
+/**
+ * Constructor Game:
+ *
+ * Inicializa la ventana, la bola y variables iniciales.
+ * LLama a la función initBlock() que muestra los bloques en pantalla.
+ * Llama a la función initText() que muestra el mensaje inicial al jugador.
+ *
+ * @author Eduardo Bolívar
+ */
 Game::Game() {
     this->window = new RenderWindow(VideoMode(800, 600), "Crazy Breakout", Style::Titlebar | Style::Close);
     this->window->setFramerateLimit(60);
@@ -20,10 +29,26 @@ Game::Game() {
     initTexts();
 }
 
+/**
+ * Deconstructor Game:
+ *
+ * Libera el espacio de memoria ocupado por la ventana principal.
+ *
+ * @author Eduardo Bolívar
+ */
 Game::~Game() {
     delete this->window;
 }
 
+/**
+ * Método initTexts():
+ *
+ * Muestra los mensajes para el jugador en pantalla.
+ * Carga la fuente utilizada para el texto de los mensajes.
+ * Establece la fuente, el tamaño de letra, el color, y demás detalles.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::initTexts() {
     this->f.loadFromFile("../resources/Catalish Huntera.ttf");
 
@@ -46,6 +71,16 @@ void Game::initTexts() {
     this->messages.setOutlineThickness(1.f);
 }
 
+/**
+ * Método initBlock():
+ *
+ * Mediante un contador y coordenadas X y Y, establece la posición de los bloques que aparecen en pantalla.
+ * El contador determina cuantos bloques van en una fila.
+ * Las coordenadas X y Y establecen una posición ordenada y centrada para los bloques.
+ * Provee un random que actúa como bandera, para generar al azar los distintos tipos de bloque.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::initBlock() {
     int rand_block;
     int counter = 0;
@@ -80,6 +115,20 @@ void Game::initBlock() {
     }
 }
 
+/**
+ * Método surprise():
+ *
+ * Se encarga de aplicar las sorpresas en el juego, cuando se colisiona con un Bloque Sorpresa.
+ * Las sorpresas son:
+ *  - Aumento del tamaño de la barra.
+ *  - Disminución del tamaño de la barra.
+ *  - Aumento de la velocidad de la bola.
+ *  - Disminución de la velocidad de la bola.
+ *
+ * Utiliza un random para decidir cuál sorpresa aplicar en juego.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::surprise() {
     int random = 1 + (rand() % 6);
     if (random == 1) {
@@ -90,14 +139,39 @@ void Game::surprise() {
     }
 }
 
+/**
+ * Método loseBall():
+ *
+ * Resta una vida al jugador cuando este pierde una bola.
+ * Es invocado cuando la bola sale de la pantalla.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::loseBall() {
     this->currentLives--;
 }
 
+/**
+ * Método isOn():
+ *
+ * Verifica si la ventana de juego sigue ejecutándose.
+ * El método es principalmente para mantener el loop del juego.
+ *
+ * @author Eduardo Bolívar
+ * @return el valor booleano de isOpen() de la ventana.
+ */
 bool Game::isOn() {
     return this->window->isOpen();
 }
 
+/**
+ * Método pollEvent():
+ *
+ * Detecta los posibles eventos que pueden ocurrir a la ventana de juego.
+ * El único evento detectable es al momento de cerrar la ventana, para cerrar el juego.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::pollEvent() {
     while (this->window->pollEvent(this->event)) {
         if (this->event.type == Event::Closed) {
@@ -107,6 +181,19 @@ void Game::pollEvent() {
     }
 }
 
+/**
+ * Método updateKey():
+ *
+ * Detecta las teclas presionadas durante ejecución del juego.
+ * Las posibles teclas que puede detectar son:
+ *  - A: para mover la barra a la izquierda.
+ *  - D: para mover la barra a la derecha.
+ *  - Flecha izquierda y flecha derecha: para rotar la barra.
+ *  - Espacio: para iniciar el juego.
+ *  - Escape: para cerrar el juego al momento de perder todas las vidas.
+ *
+ *  @author Eduardo Bolívar
+ */
 void Game::updateKey() {
     if (!this->gameOver) {
         if (Keyboard::isKeyPressed(Keyboard::A)){
@@ -132,6 +219,15 @@ void Game::updateKey() {
     }
 }
 
+/**
+ * Método updateBalls():
+ *
+ * Verifica constantemente la colisión de la bola con la barra de juego o si la bola sale de pantalla para restar una vida.
+ * Si se pierde una bola y el jugador tiene más vidas, la bola aparece nuevamente sobre la barra.
+ * Actualiza la posición de la bola por toda la ventana.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::updateBalls() {
     if (ball->getBall().getGlobalBounds().intersects(gameBar.getBar().getGlobalBounds())) {
         ball->setUp(true);
@@ -144,6 +240,17 @@ void Game::updateBalls() {
     std::cout << ball->deepPower << std::endl;
 }
 
+/**
+ * Método updateBlocks():
+ *
+ * Verifica constantemente la colisión entre la bola y algún bloque en pantalla.
+ * Si un bloque es destruido, desaparece y suma el puntaje respectivo al jugador.
+ * También invoca las características de cada bloque al ocurrir la colisión:
+ *  - Si es profundo, dar un punto de profundidad.
+ *  - Si es sorpresa, invocar una sorpresa random.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::updateBlocks() {
     for (Block* b : blocks) {
         if (this->ball->getBall().getGlobalBounds().intersects(b->blockShape.getGlobalBounds())) {
@@ -166,12 +273,29 @@ void Game::updateBlocks() {
     }
 }
 
+/**
+ * Método updatePoints():
+ *
+ * Suma los puntos dados por un bloque respectivo y los muestra en pantalla.
+ *
+ * @param points es la cantidad de puntos por sumar.
+ * @author Eduardo Bolívar
+ */
 void Game::updatePoints(int points) {
     this->currentPoints += points;
     std::cout << "POINTS: " + std::to_string(currentPoints) << std::endl;
     this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
 }
 
+/**
+ * Método update():
+ *
+ * Constantemente actualiza el juego.
+ * Invoca al resto de funciones update y verifica la muerte del jugador.
+ * Ocurre en el loop principal del programa.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::update() {
     if (currentLives <= 0) {
         this->gameOver = true;
@@ -182,6 +306,15 @@ void Game::update() {
     updateBalls();
 }
 
+/**
+ * Método render():
+ *
+ * Muestra lo que hay en pantalla.
+ * Resetea lo que hay en pantalla para luego volver a dibujarlo (renderizarlo).
+ * Ocurre en el loop principal del programa.
+ *
+ * @author Eduardo Bolívar
+ */
 void Game::render() {
     this->window->clear(Color::Black);
 
