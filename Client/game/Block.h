@@ -9,6 +9,15 @@
 
 using namespace sf;
 
+/**
+ * Clase Block:
+ *
+ * Crea los objetos bloque que aparecen en pantalla y sus características especiales.
+ * Provee métodos para obtener los atributos especiales de cada bloque, así como los puntos de brinda y su estado.
+ * Provee un objeto Rectangle que sirve para visualizar el objeto en pantalla.
+ *
+ * @author Eduardo Bolívar
+ */
 class Block {
 private:
     float posX;
