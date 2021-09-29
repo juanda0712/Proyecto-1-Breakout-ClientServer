@@ -16,16 +16,13 @@
 Game::Game() {
     this->window = new RenderWindow(VideoMode(800, 600), "Crazy Breakout", Style::Titlebar | Style::Close);
     this->window->setFramerateLimit(60);
-
-    this->ball = new Ball(gameBar.getBar().getPosition().x, gameBar.getBar().getPosition().y, 7.f);
-
+    this->ballSpeed = 5.f;
     this->currentBalls = 1;
     this->currentPoints = 0;
     this->currentLives = 3;
-
     this->started = false;
     this->gameOver = false;
-
+    this->ball = new Ball(bar.getBar().getPosition().x, bar.getBar().getPosition().y, ballSpeed);
     initBlock();
     initTexts();
 }
@@ -56,17 +53,25 @@ void Game::initTexts() {
     this->score.setFont(this->font);
     this->score.setPosition(0, 0);
     this->score.setFillColor(Color::White);
-    this->score.setOutlineColor(Color::Black);
-    this->score.setOutlineThickness(5.0f);
+    this->score.setOutlineColor(Color::Magenta);
+    this->score.setOutlineThickness(3.0f);
     this->score.setString("Puntaje: " + std::to_string(currentPoints));
 
     /// Texto para las vidas
     this->lives.setFont(this->font);
     this->lives.setPosition(680, 0);
     this->lives.setFillColor(Color::White);
-    this->lives.setOutlineColor(Color::Black);
-    this->lives.setOutlineThickness(5.0f);
+    this->lives.setOutlineColor(Color::Magenta);
+    this->lives.setOutlineThickness(3.0f);
     this->lives.setString("Vidas: " + std::to_string(currentLives));
+
+    /// Texto para los puntos de profundidad
+    this->deepPoints.setFont(this->font);
+    this->deepPoints.setPosition(320, 0);
+    this->deepPoints.setFillColor(Color::White);
+    this->deepPoints.setOutlineColor(Color::Magenta);
+    this->deepPoints.setOutlineThickness(3.0f);
+    this->deepPoints.setString("Profundidad: " + std::to_string(ball->getDeepPoints()));
 
     /// Texto para el mensaje de inicio
     this->play.setFont(this->font);
@@ -96,34 +101,33 @@ void Game::initTexts() {
  * @author Eduardo Bolívar
  */
 void Game::initBlock() {
-    int rand_block;
     int counter = 0;
     float varX = 0;
     float varY = 0;
-    for (auto & block : blocks) {
-        rand_block = 1 + (rand() % 6);
+    for (auto & b : blocks) {
+        int rand_block = 1 + (rand() % 6);
         varX += 50;
         if (counter % 15 == 0) {
             varX = 0;
             varY += 50;
         }
         if (rand_block == 1) {
-            block = BlockFactory::commonBlock(varX, varY);
+            b = BlockFactory::commonBlock(varX, varY);
         }
         else if (rand_block == 2) {
-            block = BlockFactory::doubleBlock(varX, varY);
+            b = BlockFactory::doubleBlock(varX, varY);
         }
         else if (rand_block == 3){
-            block = BlockFactory::tripleBlock(varX, varY);
+            b = BlockFactory::tripleBlock(varX, varY);
         }
         else if (rand_block == 4){
-            block = BlockFactory::innerBlock(varX, varY);
+            b = BlockFactory::deepBlock(varX, varY);
         }
         else if (rand_block == 5){
-            block = BlockFactory::deepBlock(varX, varY);
+            b = BlockFactory::innerBlock(varX, varY);
         }
         else {
-            block = BlockFactory::surpriseBlock(varX, varY);
+            b = BlockFactory::surpriseBlock(varX, varY);
         }
         counter++;
     }
@@ -146,13 +150,13 @@ void Game::initBlock() {
 void Game::surprise() {
     int random = 1 + (rand() % 3);
     if (random == 1) {
-        gameBar.getBar().setSize(Vector2f(200, 10));
+        bar.getBar().setSize(Vector2f(200, 10));
     }
     else if (random == 2) {
-        gameBar.getBar().setSize(Vector2f(50, 10));
+        bar.getBar().setSize(Vector2f(50, 10));
     }
     else {
-        gameBar.getBar().setSize(Vector2f(100, 10));
+        bar.getBar().setSize(Vector2f(100, 10));
     }
 }
 
@@ -214,16 +218,16 @@ void Game::pollEvent() {
 void Game::updateKey() {
     if (!this->gameOver) {
         if (Keyboard::isKeyPressed(Keyboard::A)){
-            gameBar.movement(0);
+            bar.movement(0);
         }
         if (Keyboard::isKeyPressed(Keyboard::D)){
-            gameBar.movement(1);
+            bar.movement(1);
         }
         if (Keyboard::isKeyPressed(Keyboard::Left)){
-            gameBar.rot(0);
+            bar.rot(0);
         }
         if (Keyboard::isKeyPressed(Keyboard::Right)){
-            gameBar.rot(1);
+            bar.rot(1);
         }
         if (Keyboard::isKeyPressed(Keyboard::Space)) {
             ball->startMoving();
@@ -247,14 +251,14 @@ void Game::updateKey() {
  * @author Eduardo Bolívar
  */
 void Game::updateBalls() {
-    if (ball->getBall().getGlobalBounds().intersects(gameBar.getBar().getGlobalBounds())) {
+    if (ball->getBall().getGlobalBounds().intersects(bar.getBar().getGlobalBounds())) {
         ball->setUp(true);
     }
     if (ball->getBall().getPosition().y >= 600 - ball->getBall().getRadius()) {
         loseBall();
-        ball->restartBall(gameBar.getBar().getPosition().x, gameBar.getBar().getPosition().y);
+        ball->restartBall(bar.getBar().getPosition().x, bar.getBar().getPosition().y);
     }
-    ball->ballMovement(gameBar.getBar().getPosition().x, gameBar.getBar().getPosition().y);
+    ball->ballMovement(bar.getBar().getPosition().x, bar.getBar().getPosition().y);
 }
 
 /**
@@ -270,12 +274,40 @@ void Game::updateBalls() {
  */
 void Game::updateBlocks() {
     for (Block* b : blocks) {
-        if (this->ball->getBall().getGlobalBounds().contains(b->blockShape.getGlobalBounds().width, b->blockShape.getGlobalBounds().height)) {
-            if (ball->getUp()) {
+        if (this->ball->getBall().getGlobalBounds().intersects(b->blockShape.getGlobalBounds())) {
+            /// Bloques indestructibles:
+            /// Revisa la colisión con el bloque profundo.
+            if (b->getIsDeep()) {
+                ball->addDeepPoint();
                 ball->setUp(false);
             }
+            /// Revisa la colisión con el bloque sorpresa.
+            else if (b->getIsSurprise()) {
+                ball->setUp(false);
+            }
+            /// Bloques destructibles:
             else {
-                ball->setUp(true);
+                if (b->getIsAlive()) {
+                    /// Revisa la colision con el bloque interno.
+                    if (b->getIsInner() && ball->getDeepPoints() > 0) {
+                        ball->removeDeepPoint();
+                        updatePoints(b->getPoints());
+                        b->blockShape.setFillColor(Color::Transparent);
+                        b->blockShape.setOutlineColor(Color::Transparent);
+                        ball->setUp(false);
+                    }
+                    /// Revisa la colision con los bloques regulares.
+                    else {
+                        b->getHit();
+                        if (b->getLives() < 0) {
+                            b->die();
+                            updatePoints(b->getPoints());
+                            b->blockShape.setFillColor(Color::Transparent);
+                            b->blockShape.setOutlineColor(Color::Transparent);
+                        }
+                        ball->setUp(false);
+                    }
+                }
             }
         }
     }
@@ -308,6 +340,16 @@ void Game::updateLives() {
 }
 
 /**
+ * Método updateDeepPoints():
+ *
+ * Actualiza el número de puntos de profundidad de la bola en pantalla.
+ * @author Eduardo Bolívar
+ */
+void Game::updateDeepPoints() {
+    this->deepPoints.setString("Profundidad: " + std::to_string(ball->getDeepPoints()));
+}
+
+/**
  * Método update():
  *
  * Constantemente actualiza el juego.
@@ -317,11 +359,12 @@ void Game::updateLives() {
  * @author Eduardo Bolívar
  */
 void Game::update() {
-    updateLives();
     pollEvent();
     updateKey();
     updateBlocks();
     updateBalls();
+    updateLives();
+    updateDeepPoints();
 }
 
 /**
@@ -346,9 +389,10 @@ void Game::render() {
         this->window->draw(lose);
     }
     this->window->draw(ball->getBall());
-    this->window->draw(gameBar.getBar());
+    this->window->draw(bar.getBar());
     this->window->draw(lives);
     this->window->draw(score);
+    this->window->draw(deepPoints);
 
     this->window->display();
 }

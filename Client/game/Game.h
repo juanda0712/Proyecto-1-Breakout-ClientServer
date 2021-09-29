@@ -16,8 +16,10 @@
 #include "../block_factory/BlockFactory.h"
 #include <iostream>
 #include <random>
+#include <vector>
 
 using namespace sf;
+using namespace std;
 
 /**
  * Clase Game:
@@ -32,9 +34,9 @@ class Game {
 private:
     RenderWindow* window;
     Event event;
-    Bar gameBar;
+    Bar bar;
     Ball* ball;
-    Block* blocks[105];
+    Block* blocks[90];
     bool started;
     bool gameOver;
     float ballSpeed;
@@ -44,6 +46,7 @@ private:
     Font font;
     Text score;
     Text lives;
+    Text deepPoints;
     Text play;
     Text lose;
     void initTexts();
@@ -60,6 +63,7 @@ public:
     void updateBlocks();
     void updatePoints(int points);
     void updateLives();
+    void updateDeepPoints();
     void update();
     void render();
 };
