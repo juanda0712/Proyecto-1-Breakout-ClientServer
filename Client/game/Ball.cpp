@@ -4,6 +4,17 @@
 
 #include "Ball.h"
 
+/**
+ * Constructor Ball:
+ *
+ * Establece el radio, el origen, la posición, el grosor, y los colores de la bola.
+ * Inicializa las variables de velocidad de la bola, puntos de profundidad, y movimientos.
+ * @param x es la posición inicial en X de la bola.
+ * @param y es la posición inicial en Y de la bola.
+ * @param speed es la velocidad con la que inicia la bola.
+ *
+ * @author Eduardo Bolívar
+ */
 Ball::Ball(float x, float y, float speed) {
     myBall.setRadius(5.f);
     myBall.setOrigin(5.f, 5.f);
@@ -20,10 +31,72 @@ Ball::Ball(float x, float y, float speed) {
     this->right = true;
 }
 
+/**
+ * Método getBall():
+ *
+ * Brinda el círculo que representa la bola en pantalla.
+ * @return Circle de la forma de la bola.
+ * @author Eduardo Bolívar
+ */
 CircleShape Ball::getBall() {
     return this->myBall;
 }
 
+/**
+ * Método getDeepPoints():
+ *
+ * Da los puntos de profundidad actuales que tiene la bola.
+ * @return los puntos de profundidad.
+ * @author Eduardo Bolívar
+ */
+int Ball::getDeepPoints() {
+
+}
+
+/**
+ * Método addDeepPoint():
+ *
+ * Suma un punto de profundidad cuando la bola colisiona con un bloque profundo.
+ * @author Eduardo Bolívar
+ */
+void Ball::addDeepPoint() {
+    this->deepPower++;
+}
+
+/**
+ * Método setUp():
+ *
+ * Establece una nueva dirección en el eje Y para la bola.
+ * @param newUp es el boolean que indica si la bola va hacia arriba.
+ * @author Eduardo Bolívar
+ */
+void Ball::setUp(bool newUp) {
+    this->up = newUp;
+}
+
+/**
+ * Método restartBall():
+ *
+ * Reinicia la bola cuando cae por debajo de la pantalla.
+ * Se coloca nuevamente sobre la barra.
+ * @param initPosX es la posición inicial en X (la de la barra).
+ * @param initPosY es la posición inicial en Y (la de la barra).
+ *
+ * @author Eduardo Bolívar
+ */
+void Ball::restartBall(float initPosX, float initPosY) {
+    myBall.setPosition(initPosX, initPosY);
+    this->move = false;
+}
+
+/**
+ * Método changeDirection():
+ *
+ * Cambia la dirección de la bola en el eje Y cuando la bola colisiona con un bloque.
+ * Si iba hacia arriba, cambia hacia abajo, y viceversa.
+ *
+ * @author Eduardo Bolívar
+ */
 void Ball::changeDirection() {
     if (this->up) {
         this->up = false;
@@ -33,29 +106,33 @@ void Ball::changeDirection() {
     }
 }
 
+/**
+ * Método startMoving():
+ *
+ * Inicia el movimiento de la bola al presionar la tecla Espacio.
+ * Establece la variable "move" como verdadera.
+ *
+ * @author Eduardo Bolívar
+ */
 void Ball::startMoving() {
     this->move = true;
 }
 
-void Ball::setUp(bool newUp) {
-    this->up = newUp;
-}
-
-bool Ball::getUp() {
-    return this->up;
-}
-
-void Ball::getDeepPoint() {
-    this->deepPower++;
-}
-
-void Ball::restartBall(float initPosX, float initPosY) {
-    myBall.setPosition(initPosX, initPosY);
-    this->move = false;
-}
-
+/**
+ * Método ballMovement():
+ *
+ * Realiza el movimiento de la bola alrededor de la pantalla.
+ * Detecta si la bola colisiona con los bordes para invertir la dirección del movimiento.
+ * Sólo ocurre si la variable "move" es verdadera, sino, la bola sólo se mueve junto con la barra.
+ *
+ * @param initPosX es la posición en X de la barra.
+ * @param initPosY es la posición en Y de la barra.
+ *
+ * @author Eduardo Bolívar
+ */
 void Ball::ballMovement(float initPosX, float initPosY) {
     if (this->move) {
+        /// Movimiento para el eje horizontal
         if (myBall.getPosition().x < 800 - myBall.getRadius() && right) {
             myBall.move(speed, 0.f);
             if (myBall.getPosition().x >= 800 - myBall.getRadius()) {
@@ -70,6 +147,7 @@ void Ball::ballMovement(float initPosX, float initPosY) {
                 this->right = true;
             }
         }
+        /// Movimiento para el eje vertical
         if (myBall.getPosition().y > 0 + myBall.getRadius() && up) {
             myBall.move(0.f, -speed);
             if (myBall.getPosition().y <= 0 + myBall.getRadius()) {
@@ -81,6 +159,7 @@ void Ball::ballMovement(float initPosX, float initPosY) {
             myBall.move(0.f, speed);
         }
     }
+    /// Movimiento si no se ha presionado la tecla Espacio.
     else {
         myBall.setPosition(initPosX, initPosY - 15);
     }

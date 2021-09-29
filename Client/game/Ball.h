@@ -11,6 +11,16 @@
 
 using namespace sf;
 
+/**
+ * Clase Ball:
+ *
+ * Es la clase a partir de la que se crean las bolas del juego.
+ * Provee atributos como la velocidad de la bola, el movimiento, capacidad de moverse a la derecha y
+ * hacia arriba, y puntos de profundidad obtenidos de bloques profundos.
+ * Provee métodos para el movimiento de la bola, la dirección de la bola, reiniciar la bola, y sumar puntos de profundidad
+ *
+ * @author Eduardo Bolívar
+ */
 class Ball {
 private:
     CircleShape myBall;
@@ -18,17 +28,17 @@ private:
     float speed;
     bool right;
     bool up;
+    int deepPower;
 public:
     Ball(float x, float y, float speed);
-    int deepPower;
-    void startMoving();
-    void ballMovement(float initPosX, float initPosY);
     CircleShape getBall();
-    void getDeepPoint();
+    int getDeepPoints();
+    void addDeepPoint();
     void setUp(bool newUp);
-    bool getUp();
     void restartBall(float initPosX, float initPosY);
     void changeDirection();
+    void startMoving();
+    void ballMovement(float initPosX, float initPosY);
 };
 
 
