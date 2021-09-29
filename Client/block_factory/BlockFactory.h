@@ -7,6 +7,14 @@
 
 #include "../game/Block.h"
 
+/**
+ * Clase BlockFactory:
+ *
+ * Provee un método por cada tipo de bloque para crear dicho bloque.
+ * Provee un método para customizar los bloques, en cuanto a color, tamaño y grosor.
+ *
+ * @author Eduardo Bolívar
+ */
 class BlockFactory {
 private:
     static void customizeBlock(Block* block, Color in, Color out);
