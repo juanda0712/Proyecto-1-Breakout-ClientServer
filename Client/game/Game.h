@@ -34,15 +34,18 @@ private:
     Event event;
     Bar gameBar;
     Ball* ball;
-    Block* blocks[60];
+    Block* blocks[105];
+    bool started;
     bool gameOver;
     float ballSpeed;
     int currentBalls;
     int currentPoints;
     int currentLives;
-    Font f;
-    Text messages;
-    Text pointsT;
+    Font font;
+    Text score;
+    Text lives;
+    Text play;
+    Text lose;
     void initTexts();
     void initBlock();
 public:
@@ -56,6 +59,7 @@ public:
     void updateBalls();
     void updateBlocks();
     void updatePoints(int points);
+    void updateLives();
     void update();
     void render();
 };

@@ -23,6 +23,7 @@ Game::Game() {
     this->currentPoints = 0;
     this->currentLives = 3;
 
+    this->started = false;
     this->gameOver = false;
 
     initBlock();
@@ -50,25 +51,38 @@ Game::~Game() {
  * @author Eduardo Bolívar
  */
 void Game::initTexts() {
-    this->f.loadFromFile("../resources/Catalish Huntera.ttf");
+    /// Texto para el puntaje
+    this->font.loadFromFile("../hinted-CelloSans-Regular.ttf");
+    this->score.setFont(this->font);
+    this->score.setPosition(0, 0);
+    this->score.setFillColor(Color::White);
+    this->score.setOutlineColor(Color::Black);
+    this->score.setOutlineThickness(5.0f);
+    this->score.setString("Puntaje: " + std::to_string(currentPoints));
 
-    this->pointsT.setFont(this->f);
-    this->pointsT.setCharacterSize(1);
-    this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
-    this->pointsT.setPosition(800.f/15, 600.f - 50);
-    this->pointsT.setScale(50,50);
-    this->pointsT.setFillColor(Color::White);
-    this->pointsT.setOutlineColor(Color::Green);
-    this->pointsT.setOutlineThickness(1.f);
+    /// Texto para las vidas
+    this->lives.setFont(this->font);
+    this->lives.setPosition(680, 0);
+    this->lives.setFillColor(Color::White);
+    this->lives.setOutlineColor(Color::Black);
+    this->lives.setOutlineThickness(5.0f);
+    this->lives.setString("Vidas: " + std::to_string(currentLives));
 
-    this->messages.setFont(f);
-    this->messages.setCharacterSize(1);
-    this->messages.setPosition(800.f/2, 600.f/2);
-    this->messages.setScale(200, 100);
-    this->messages.setOrigin(100, 50);
-    this->messages.setFillColor(Color::Yellow);
-    this->messages.setOutlineColor(Color::Magenta);
-    this->messages.setOutlineThickness(1.f);
+    /// Texto para el mensaje de inicio
+    this->play.setFont(this->font);
+    this->play.setPosition(800.f/4, 600.f/3);
+    this->play.setFillColor(Color::White);
+    this->play.setOutlineColor(Color::Black);
+    this->play.setOutlineThickness(5.f);
+    this->play.setString("Presiona 'Espacio' para jugar!");
+
+    /// Texto de Game Over
+    this->lose.setFont(this->font);
+    this->lose.setPosition(800.f/4, 600.f/3);
+    this->lose.setFillColor(Color::Black);
+    this->lose.setOutlineColor(Color::White);
+    this->lose.setOutlineThickness(5.f);
+    this->lose.setString("Game over!\nPresiona ESC para salir del juego");
 }
 
 /**
@@ -130,12 +144,15 @@ void Game::initBlock() {
  * @author Eduardo Bolívar
  */
 void Game::surprise() {
-    int random = 1 + (rand() % 6);
+    int random = 1 + (rand() % 3);
     if (random == 1) {
         gameBar.getBar().setSize(Vector2f(200, 10));
     }
     else if (random == 2) {
         gameBar.getBar().setSize(Vector2f(50, 10));
+    }
+    else {
+        gameBar.getBar().setSize(Vector2f(100, 10));
     }
 }
 
@@ -210,6 +227,7 @@ void Game::updateKey() {
         }
         if (Keyboard::isKeyPressed(Keyboard::Space)) {
             ball->startMoving();
+            this->started = true;
         }
     }
     if (Keyboard::isKeyPressed(Keyboard::Escape)) {
@@ -237,7 +255,6 @@ void Game::updateBalls() {
         ball->restartBall(gameBar.getBar().getPosition().x, gameBar.getBar().getPosition().y);
     }
     ball->ballMovement(gameBar.getBar().getPosition().x, gameBar.getBar().getPosition().y);
-    std::cout << ball->deepPower << std::endl;
 }
 
 /**
@@ -253,21 +270,12 @@ void Game::updateBalls() {
  */
 void Game::updateBlocks() {
     for (Block* b : blocks) {
-        if (this->ball->getBall().getGlobalBounds().intersects(b->blockShape.getGlobalBounds())) {
-            if (b->getIsSurprise()) {
-
+        if (this->ball->getBall().getGlobalBounds().contains(b->blockShape.getGlobalBounds().width, b->blockShape.getGlobalBounds().height)) {
+            if (ball->getUp()) {
+                ball->setUp(false);
             }
-            else if (b->getIsAlive()) {
-                b->getHit();
-                if (b->getIsDeep()) {
-                    ball->getDeepPoint();
-                }
-                if (b->getLives() < 0) {
-                    b->die();
-                    b->blockShape.setFillColor(Color::Transparent);
-                    b->blockShape.setOutlineColor(Color::Transparent);
-                }
-                ball->changeDirection();
+            else {
+                ball->setUp(true);
             }
         }
     }
@@ -283,8 +291,20 @@ void Game::updateBlocks() {
  */
 void Game::updatePoints(int points) {
     this->currentPoints += points;
-    std::cout << "POINTS: " + std::to_string(currentPoints) << std::endl;
-    this->pointsT.setString("POINTS: " + std::to_string(currentPoints));
+    this->score.setString("Puntaje: " + std::to_string(currentPoints));
+}
+
+/**
+ * Método updateLives():
+ *
+ * Actualiza y verifica el número de vidas del jugador para mostrarlas en pantalla.
+ * @author Eduardo Bolívar
+ */
+void Game::updateLives() {
+    if (currentLives <= 0) {
+        this->gameOver = true;
+    }
+    this->lives.setString("Vidas: " + std::to_string(currentLives));
 }
 
 /**
@@ -297,9 +317,7 @@ void Game::updatePoints(int points) {
  * @author Eduardo Bolívar
  */
 void Game::update() {
-    if (currentLives <= 0) {
-        this->gameOver = true;
-    }
+    updateLives();
     pollEvent();
     updateKey();
     updateBlocks();
@@ -321,8 +339,16 @@ void Game::render() {
     for (Block* b : this->blocks) {
         this->window->draw(b->blockShape);
     }
+    if (!started) {
+        this->window->draw(play);
+    }
+    if (gameOver) {
+        this->window->draw(lose);
+    }
     this->window->draw(ball->getBall());
     this->window->draw(gameBar.getBar());
+    this->window->draw(lives);
+    this->window->draw(score);
 
     this->window->display();
 }

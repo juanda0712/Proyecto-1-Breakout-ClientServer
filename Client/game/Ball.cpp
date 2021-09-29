@@ -50,7 +50,7 @@ CircleShape Ball::getBall() {
  * @author Eduardo Bolívar
  */
 int Ball::getDeepPoints() {
-
+    return this->deepPower;
 }
 
 /**
@@ -61,6 +61,27 @@ int Ball::getDeepPoints() {
  */
 void Ball::addDeepPoint() {
     this->deepPower++;
+}
+
+/**
+ * Método removeDeepPoint():
+ *
+ * Resta un punto de profundidad cuando la bola colisiona con un bloque interno.
+ * @author Eduardo Bolívar
+ */
+void Ball::removeDeepPoint() {
+    this->deepPower--;
+}
+
+/**
+ * Método getUp():
+ *
+ * Da el valor booleano del movimiento en el eje Y de la bola.
+ * @return el valor booleano para saber si la bola va hacia arriba.
+ * @author Eduardo Bolívar
+ */
+bool Ball::getUp() const {
+    return this->up;
 }
 
 /**
@@ -87,23 +108,6 @@ void Ball::setUp(bool newUp) {
 void Ball::restartBall(float initPosX, float initPosY) {
     myBall.setPosition(initPosX, initPosY);
     this->move = false;
-}
-
-/**
- * Método changeDirection():
- *
- * Cambia la dirección de la bola en el eje Y cuando la bola colisiona con un bloque.
- * Si iba hacia arriba, cambia hacia abajo, y viceversa.
- *
- * @author Eduardo Bolívar
- */
-void Ball::changeDirection() {
-    if (this->up) {
-        this->up = false;
-    }
-    else {
-        this->up = true;
-    }
 }
 
 /**

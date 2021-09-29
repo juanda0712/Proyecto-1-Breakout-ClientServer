@@ -24,7 +24,6 @@ using namespace sf;
 class Ball {
 private:
     CircleShape myBall;
-    bool move;
     float speed;
     bool right;
     bool up;
@@ -34,11 +33,13 @@ public:
     CircleShape getBall();
     int getDeepPoints();
     void addDeepPoint();
+    void removeDeepPoint();
+    bool getUp() const;
     void setUp(bool newUp);
     void restartBall(float initPosX, float initPosY);
-    void changeDirection();
     void startMoving();
     void ballMovement(float initPosX, float initPosY);
+    bool move;
 };
 
 
