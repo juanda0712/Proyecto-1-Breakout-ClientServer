@@ -9,6 +9,15 @@
 
 using namespace sf;
 
+/**
+ * Clase Bar:
+ *
+ * Es la clase a partir de la que se crea la barra del juego.
+ * Provee un Rectangle que modela la barra en pantalla.
+ * Provee métodos para mover y rotar la barra.
+ *
+ * @author Eduardo Bolívar
+ */
 class Bar {
 private:
     RectangleShape barra;
