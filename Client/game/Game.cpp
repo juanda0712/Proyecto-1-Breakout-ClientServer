@@ -22,7 +22,8 @@ Game::Game() {
     this->currentLives = 3;
     this->started = false;
     this->gameOver = false;
-    this->ball = new Ball(bar.getBar().getPosition().x, bar.getBar().getPosition().y, ballSpeed);
+    this->bar = new Bar();
+    this->ball = new Ball(bar->getBar().getPosition().x, bar->getBar().getPosition().y, ballSpeed);
     initBlock();
     initTexts();
 }
@@ -148,15 +149,15 @@ void Game::initBlock() {
  * @author Eduardo Bolívar
  */
 void Game::surprise() {
-    int random = 1 + (rand() % 3);
+    int random = 1 + (rand() % 2);
     if (random == 1) {
-        bar.getBar().setSize(Vector2f(200, 10));
+        this->ball->updateSpeed(this->ballSpeed + 3.f);
     }
     else if (random == 2) {
-        bar.getBar().setSize(Vector2f(50, 10));
+        this->ball->updateSpeed(this->ballSpeed - 3.f);
     }
     else {
-        bar.getBar().setSize(Vector2f(100, 10));
+        this->ball->updateSpeed(this->ballSpeed);
     }
 }
 
@@ -218,24 +219,24 @@ void Game::pollEvent() {
 void Game::updateKey() {
     if (!this->gameOver) {
         if (Keyboard::isKeyPressed(Keyboard::A)){
-            bar.movement(0);
+            bar->movement(0);
         }
         if (Keyboard::isKeyPressed(Keyboard::D)){
-            bar.movement(1);
+            bar->movement(1);
         }
         if (Keyboard::isKeyPressed(Keyboard::Left)){
-            bar.rot(0);
+            bar->rot(0);
         }
         if (Keyboard::isKeyPressed(Keyboard::Right)){
-            bar.rot(1);
+            bar->rot(1);
         }
         if (Keyboard::isKeyPressed(Keyboard::Space)) {
             ball->startMoving();
             this->started = true;
         }
     }
-    if (Keyboard::isKeyPressed(Keyboard::Escape)) {
-        if (this->gameOver) {
+    else {
+        if (Keyboard::isKeyPressed(Keyboard::Escape)) {
             this->window->close();
         }
     }
@@ -251,14 +252,14 @@ void Game::updateKey() {
  * @author Eduardo Bolívar
  */
 void Game::updateBalls() {
-    if (ball->getBall().getGlobalBounds().intersects(bar.getBar().getGlobalBounds())) {
+    if (ball->getBall().getGlobalBounds().intersects(bar->getBar().getGlobalBounds())) {
         ball->setUp(true);
     }
     if (ball->getBall().getPosition().y >= 600 - ball->getBall().getRadius()) {
         loseBall();
-        ball->restartBall(bar.getBar().getPosition().x, bar.getBar().getPosition().y);
+        ball->restartBall(bar->getBar().getPosition().x, bar->getBar().getPosition().y);
     }
-    ball->ballMovement(bar.getBar().getPosition().x, bar.getBar().getPosition().y);
+    ball->ballMovement(bar->getBar().getPosition().x, bar->getBar().getPosition().y);
 }
 
 /**
@@ -283,6 +284,7 @@ void Game::updateBlocks() {
             }
             /// Revisa la colisión con el bloque sorpresa.
             else if (b->getIsSurprise()) {
+                this->surprise();
                 ball->setUp(false);
             }
             /// Bloques destructibles:
@@ -299,7 +301,7 @@ void Game::updateBlocks() {
                     /// Revisa la colision con los bloques regulares.
                     else {
                         b->getHit();
-                        if (b->getLives() < 0) {
+                        if (b->getLives() <= 0) {
                             b->die();
                             updatePoints(b->getPoints());
                             b->blockShape.setFillColor(Color::Transparent);
@@ -389,7 +391,7 @@ void Game::render() {
         this->window->draw(lose);
     }
     this->window->draw(ball->getBall());
-    this->window->draw(bar.getBar());
+    this->window->draw(bar->getBar());
     this->window->draw(lives);
     this->window->draw(score);
     this->window->draw(deepPoints);

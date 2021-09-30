@@ -26,7 +26,7 @@ int main() {
     //pthread_create(&hiloC, 0, clienteRun, NULL);
     //pthread_detach(hiloC);
 
-    //string json = "Hola desde el cliente";
+    //string json = "Hola desde el cliente";a
 
     Game* session = new Game;
 

@@ -34,7 +34,7 @@ class Game {
 private:
     RenderWindow* window;
     Event event;
-    Bar bar;
+    Bar* bar;
     Ball* ball;
     Block* blocks[90];
     bool started;

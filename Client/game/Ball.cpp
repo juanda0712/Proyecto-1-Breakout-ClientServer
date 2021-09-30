@@ -74,17 +74,6 @@ void Ball::removeDeepPoint() {
 }
 
 /**
- * Método getUp():
- *
- * Da el valor booleano del movimiento en el eje Y de la bola.
- * @return el valor booleano para saber si la bola va hacia arriba.
- * @author Eduardo Bolívar
- */
-bool Ball::getUp() const {
-    return this->up;
-}
-
-/**
  * Método setUp():
  *
  * Establece una nueva dirección en el eje Y para la bola.
@@ -167,4 +156,15 @@ void Ball::ballMovement(float initPosX, float initPosY) {
     else {
         myBall.setPosition(initPosX, initPosY - 15);
     }
+}
+
+/**
+ * Método updateSpeed():
+ *
+ * Cambia la velocidad de la bola al tocar una sorpresa.
+ * @param sp es la nueva velocidad de la bola.
+ * @author Eduardo Bolívar
+ */
+void Ball::updateSpeed(float sp) {
+    this->speed = sp;
 }

@@ -34,11 +34,11 @@ public:
     int getDeepPoints();
     void addDeepPoint();
     void removeDeepPoint();
-    bool getUp() const;
     void setUp(bool newUp);
     void restartBall(float initPosX, float initPosY);
     void startMoving();
     void ballMovement(float initPosX, float initPosY);
+    void updateSpeed(float sp);
     bool move;
 };
 

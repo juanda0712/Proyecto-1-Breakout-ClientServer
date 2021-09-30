@@ -14,8 +14,8 @@ Bar::Bar() {
     barra.setSize(Vector2f(100, 10));
     barra.setPosition(400, 550);
     barra.setOrigin(50, 10);
-    barra.setFillColor(Color::Yellow);
-    barra.setOutlineColor(Color::White);
+    barra.setFillColor(Color::Black);
+    barra.setOutlineColor(Color::Yellow);
     barra.setOutlineThickness(2.f);
 }
 
