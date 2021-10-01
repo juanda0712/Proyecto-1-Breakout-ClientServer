@@ -116,9 +116,6 @@ void* SocketServer::controladorCliente(void* obj) {
                 break;
             }
         }
-
-
-
         cout << mensaje << endl; //mensaje del cliente
         //mensaje es la variable que me llega del cliente y tengo que ver que hago con ella en el servidor
         // se puede usar para el juego o para una clase

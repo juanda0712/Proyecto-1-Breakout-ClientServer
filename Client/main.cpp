@@ -1,5 +1,5 @@
 #include "SocketClient.h"
-#include "game/Game.h"
+#include "KeyListener.h"
 
 SocketClient* cliente;
 
@@ -21,26 +21,22 @@ void * clienteRun(void *){
  * @return 0
  */
 int main() {
-    //cliente = new SocketClient;
-    //pthread_t hiloC;
-    //pthread_create(&hiloC, 0, clienteRun, NULL);
-    //pthread_detach(hiloC);
+    cliente = new SocketClient;
+    pthread_t hiloC;
+    pthread_create(&hiloC, 0, clienteRun, NULL);
+    pthread_detach(hiloC);
 
-    //string json = "Hola desde el cliente";a
+    string json = "Hola desde el cliente";
+    cliente->setMensaje(json.c_str());
 
-    Game* session = new Game;
+    KeyListener kl;
+    while (true){
+        string msn;
 
-    while (session->isOn()){
-        //string msn;
-        //cin >> msn;
-        session->update();
-        session->render();
-        //if(msn == "salir")
-        //    break;
-        //cliente->setMensaje(json.c_str());
+        if(msn == "salir")
+            break;
+        cliente->setMensaje(msn.c_str());
     }
-
-    delete session;
     delete cliente;
 
     return 0;
