@@ -24,7 +24,8 @@ int main() {
     while (game->isOn()){
         game->update();
         game->render();
-
+        game->updateKey(SocketServer::instruction);
+        SocketServer::instruction = "";
         //server->setMensaje(json.c_str());
     }
     delete server;

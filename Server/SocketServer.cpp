@@ -1,5 +1,5 @@
 #include "SocketServer.h"
-
+string SocketServer::instruction;
 /**
  * Constructor SocketServer:
  *
@@ -116,6 +116,7 @@ void* SocketServer::controladorCliente(void* obj) {
                 break;
             }
         }
+        SocketServer::instruction = mensaje;
         cout << mensaje << endl; //mensaje del cliente
         //mensaje es la variable que me llega del cliente y tengo que ver que hago con ella en el servidor
         // se puede usar para el juego o para una clase

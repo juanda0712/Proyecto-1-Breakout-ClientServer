@@ -38,7 +38,7 @@ public:
     SocketServer();
     void run();
     void setMensaje(const char* msn);
-    string instruction;
+    static string instruction;
 private:
     int descriptor;
     sockaddr_in info;

@@ -56,24 +56,24 @@ void Game::initTexts() {
     this->score.setFont(this->font);
     this->score.setPosition(0, 0);
     this->score.setFillColor(Color::White);
-    this->score.setOutlineColor(Color::Magenta);
-    this->score.setOutlineThickness(3.0f);
+    this->score.setOutlineColor(Color::Yellow);
+    this->score.setOutlineThickness(2.0f);
     this->score.setString("Puntaje: " + std::to_string(currentPoints));
 
     /// Texto para las vidas
     this->lives.setFont(this->font);
     this->lives.setPosition(680, 0);
     this->lives.setFillColor(Color::White);
-    this->lives.setOutlineColor(Color::Magenta);
-    this->lives.setOutlineThickness(3.0f);
+    this->lives.setOutlineColor(Color::Yellow);
+    this->lives.setOutlineThickness(2.0f);
     this->lives.setString("Vidas: " + std::to_string(currentLives));
 
     /// Texto para los puntos de profundidad
     this->deepPoints.setFont(this->font);
     this->deepPoints.setPosition(320, 0);
     this->deepPoints.setFillColor(Color::White);
-    this->deepPoints.setOutlineColor(Color::Magenta);
-    this->deepPoints.setOutlineThickness(3.0f);
+    this->deepPoints.setOutlineColor(Color::Yellow);
+    this->deepPoints.setOutlineThickness(2.0f);
     this->deepPoints.setString("Profundidad: " + std::to_string(ball->getDeepPoints()));
 
     /// Texto para el mensaje de inicio
@@ -237,10 +237,8 @@ void Game::updateKey(string instruction) {
             this->started = true;
         }
     }
-    else {
-        if (instruction == "Esc") {
-            this->window->close();
-        }
+    if (instruction == "Esc") {
+        this->window->close();
     }
 }
 
@@ -259,6 +257,7 @@ void Game::updateBalls() {
     }
     if (ball->getBall().getPosition().y >= 600 - ball->getBall().getRadius()) {
         loseBall();
+        bar->getBar().setSize(Vector2f(bar->getBar().getSize().x - 10, bar->getBar().getSize().y));
         ball->restartBall(bar->getBar().getPosition().x, bar->getBar().getPosition().y);
     }
     ball->ballMovement(bar->getBar().getPosition().x, bar->getBar().getPosition().y);
@@ -290,27 +289,25 @@ void Game::updateBlocks() {
                 ball->setUp(false);
             }
             /// Bloques destructibles:
-            else {
-                if (b->getIsAlive()) {
-                    /// Revisa la colision con el bloque interno.
-                    if (b->getIsInner() && ball->getDeepPoints() > 0) {
-                        ball->removeDeepPoint();
+            else if (b->getIsAlive()) {
+                /// Revisa la colision con el bloque interno.
+                if (b->getIsInner() && ball->getDeepPoints() > 0) {
+                    ball->removeDeepPoint();
+                    updatePoints(b->getPoints());
+                    b->blockShape.setFillColor(Color::Transparent);
+                    b->blockShape.setOutlineColor(Color::Transparent);
+                    ball->setUp(false);
+                }
+                /// Revisa la colision con los bloques regulares.
+                else {
+                    b->getHit();
+                    if (b->getLives() <= 0) {
+                        b->die();
                         updatePoints(b->getPoints());
                         b->blockShape.setFillColor(Color::Transparent);
                         b->blockShape.setOutlineColor(Color::Transparent);
-                        ball->setUp(false);
                     }
-                    /// Revisa la colision con los bloques regulares.
-                    else {
-                        b->getHit();
-                        if (b->getLives() <= 0) {
-                            b->die();
-                            updatePoints(b->getPoints());
-                            b->blockShape.setFillColor(Color::Transparent);
-                            b->blockShape.setOutlineColor(Color::Transparent);
-                        }
-                        ball->setUp(false);
-                    }
+                    ball->setUp(false);
                 }
             }
         }
@@ -367,6 +364,7 @@ void Game::update() {
     updateBlocks();
     updateBalls();
     updateLives();
+    updateDeepPoints();
 }
 
 /**

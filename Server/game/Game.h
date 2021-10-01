@@ -36,7 +36,7 @@ private:
     Event event;
     Bar* bar;
     Ball* ball;
-    Block* blocks[90];
+    Block* blocks[75];
     bool started;
     bool gameOver;
     float ballSpeed;

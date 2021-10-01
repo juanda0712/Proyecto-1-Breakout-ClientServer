@@ -29,14 +29,20 @@ int main() {
     string json = "Hola desde el cliente";
     cliente->setMensaje(json.c_str());
 
+    auto* window = new RenderWindow(VideoMode(200,200), "Hola", Style::Titlebar);
+    window->clear(Color::White);
+    window->display();
     KeyListener kl;
-    while (true){
+    while (window->isOpen()){
         string msn;
-
-        if(msn == "salir")
-            break;
+        msn = kl.updateKeyPressed();
+        if(msn == "Esc") {
+            window->close();
+            cliente->setMensaje(msn.c_str());
+        }
         cliente->setMensaje(msn.c_str());
     }
+    delete window;
     delete cliente;
 
     return 0;
