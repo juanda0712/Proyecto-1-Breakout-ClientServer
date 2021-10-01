@@ -117,9 +117,6 @@ void* SocketServer::controladorCliente(void* obj) {
             }
         }
         SocketServer::instruction = mensaje;
-        cout << mensaje << endl; //mensaje del cliente
-        //mensaje es la variable que me llega del cliente y tengo que ver que hago con ella en el servidor
-        // se puede usar para el juego o para una clase
     }
     close(clientData->descriptor);
     pthread_exit(NULL);

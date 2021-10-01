@@ -15,7 +15,7 @@ void * clienteRun(void *){
 /**
  * Función main:
  * Crea una instancia de cliente y un hilo sobre el cual se ejecuta en segundo plano.
- * Tambien crea una sesión de juego y constantemente actualiza y renderiza la pantalla.
+ * Tambien crea una ventana que sirve para el input del cliente.
  *
  * @authors Juan Rodríguez Eduardo Bolívar
  * @return 0
@@ -28,17 +28,19 @@ int main() {
 
     string json = "Hola desde el cliente";
     cliente->setMensaje(json.c_str());
-
-    auto* window = new RenderWindow(VideoMode(200,200), "Hola", Style::Titlebar);
-    window->clear(Color::White);
-    window->display();
     KeyListener kl;
+
+    auto* window = new RenderWindow(VideoMode(200,200), "Client controller", Style::Titlebar);
+    window->clear(Color::White);
+
+    window->display();
+
     while (window->isOpen()){
         string msn;
         msn = kl.updateKeyPressed();
-        if(msn == "Esc") {
-            window->close();
+        if (msn == "Esc") {
             cliente->setMensaje(msn.c_str());
+            window->close();
         }
         cliente->setMensaje(msn.c_str());
     }

@@ -290,6 +290,10 @@ void Game::updateBlocks() {
             }
             /// Bloques destructibles:
             else if (b->getIsAlive()) {
+                if (ball->getDeepPoints() > 0) {
+                    ball->setUp(true);
+                    ball->removeDeepPoint();
+                }
                 /// Revisa la colision con el bloque interno.
                 if (b->getIsInner() && ball->getDeepPoints() > 0) {
                     ball->removeDeepPoint();
