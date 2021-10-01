@@ -1,4 +1,5 @@
 #include "SocketServer.h"
+#include "game/Game.h"
 
 SocketServer* server;
 
@@ -18,11 +19,16 @@ int main() {
 
     //ciclo para enviar mensajes a los clientes
     string json = "Hola desde el servidor";
-    while (true){
 
-
+    Game* game = new Game;
+    while (game->isOn()){
+        game->update();
+        game->render();
+        game->updateKey(SocketServer::instruction);
+        SocketServer::instruction = "";
         //server->setMensaje(json.c_str());
     }
     delete server;
+    delete game;
     return 0;
 }
